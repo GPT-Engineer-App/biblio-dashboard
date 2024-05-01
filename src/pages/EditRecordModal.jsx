@@ -11,6 +11,10 @@ const EditRecordModal = ({ isOpen, onClose, record, setRecord }) => {
     e.preventDefault();
 
     onClose();
+    const handleSaveToFile = () => {
+      console.log("Simulating file save with record:", record);
+    };
+    handleSaveToFile();
   };
 
   return (

@@ -29,6 +29,31 @@ const Index = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [editingRecord, setEditingRecord] = React.useState(null);
 
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target.result;
+
+        console.log(content);
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const handleSaveToFile = () => {
+    const bibtexString = "Converted state to BibTeX string";
+    const blob = new Blob([bibtexString], { type: "text/plain" });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = "updated_records.bib";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleEdit = (record) => {
     setEditingRecord(record);
     onOpen();
@@ -37,7 +62,7 @@ const Index = () => {
     <>
       <Box p={5}>
         <Heading mb={4}>Bibliographic Records Dashboard</Heading>
-        <input type="file" id="fileInput" hidden onChange={(e) => console.log(e.target.files[0].name)} />
+        <input type="file" id="fileInput" hidden onChange={handleFileChange} />
         <Button onClick={() => document.getElementById("fileInput").click()} leftIcon={<FaFilePdf />} colorScheme="teal" variant="solid" mb={4}>
           Upload BibTeX File
         </Button>
