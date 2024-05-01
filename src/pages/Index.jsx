@@ -1,7 +1,9 @@
 // Complete the Index page component here
 // Use chakra-ui for styling and layout
-import { Box, Flex, Heading, Text, Image, VStack, HStack, Button, Divider } from "@chakra-ui/react";
+import React from "react";
+import { Box, Flex, Heading, Text, Image, VStack, HStack, Button, Divider, useDisclosure } from "@chakra-ui/react";
 import { FaFilePdf, FaEdit, FaTrashAlt } from "react-icons/fa";
+import EditRecordModal from "./EditRecordModal";
 
 const bibliographicRecords = [
   {
@@ -24,40 +26,50 @@ const bibliographicRecords = [
 ];
 
 const Index = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [editingRecord, setEditingRecord] = React.useState(null);
+
+  const handleEdit = (record) => {
+    setEditingRecord(record);
+    onOpen();
+  };
   return (
-    <Box p={5}>
-      <Heading mb={4}>Bibliographic Records Dashboard</Heading>
-      <input type="file" id="fileInput" hidden onChange={(e) => console.log(e.target.files[0].name)} />
-      <Button onClick={() => document.getElementById("fileInput").click()} leftIcon={<FaFilePdf />} colorScheme="teal" variant="solid" mb={4}>
-        Upload BibTeX File
-      </Button>
-      <VStack divider={<Divider />} spacing={4} align="stretch">
-        {bibliographicRecords.map((record) => (
-          <Box key={record.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg">
-            <HStack spacing={4}>
-              <Image borderRadius="md" boxSize="100px" objectFit="cover" src={record.thumbnail} alt={`Thumbnail for ${record.title}`} />
-              <VStack align="stretch">
-                <Heading size="md">{record.title}</Heading>
-                <Text fontSize="sm">Publication: {record.publication}</Text>
-                <Text fontSize="sm">Authors: {record.authors}</Text>
-                <Text noOfLines={3}>{record.abstract}</Text>
-              </VStack>
-            </HStack>
-            <Flex mt={4} justify="flex-end">
-              <Button leftIcon={<FaFilePdf />} colorScheme="blue" variant="outline" mr={2}>
-                View PDF
-              </Button>
-              <Button leftIcon={<FaEdit />} colorScheme="green" variant="outline" mr={2}>
-                Edit
-              </Button>
-              <Button leftIcon={<FaTrashAlt />} colorScheme="red" variant="outline">
-                Delete
-              </Button>
-            </Flex>
-          </Box>
-        ))}
-      </VStack>
-    </Box>
+    <>
+      <Box p={5}>
+        <Heading mb={4}>Bibliographic Records Dashboard</Heading>
+        <input type="file" id="fileInput" hidden onChange={(e) => console.log(e.target.files[0].name)} />
+        <Button onClick={() => document.getElementById("fileInput").click()} leftIcon={<FaFilePdf />} colorScheme="teal" variant="solid" mb={4}>
+          Upload BibTeX File
+        </Button>
+        <VStack divider={<Divider />} spacing={4} align="stretch">
+          {bibliographicRecords.map((record) => (
+            <Box key={record.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg">
+              <HStack spacing={4}>
+                <Image borderRadius="md" boxSize="100px" objectFit="cover" src={record.thumbnail} alt={`Thumbnail for ${record.title}`} />
+                <VStack align="stretch">
+                  <Heading size="md">{record.title}</Heading>
+                  <Text fontSize="sm">Publication: {record.publication}</Text>
+                  <Text fontSize="sm">Authors: {record.authors}</Text>
+                  <Text noOfLines={3}>{record.abstract}</Text>
+                </VStack>
+              </HStack>
+              <Flex mt={4} justify="flex-end">
+                <Button leftIcon={<FaFilePdf />} colorScheme="blue" variant="outline" mr={2}>
+                  View PDF
+                </Button>
+                <Button leftIcon={<FaEdit />} colorScheme="green" variant="outline" mr={2} onClick={() => handleEdit(record)}>
+                  Edit
+                </Button>
+                <Button leftIcon={<FaTrashAlt />} colorScheme="red" variant="outline">
+                  Delete
+                </Button>
+              </Flex>
+            </Box>
+          ))}
+        </VStack>
+      </Box>
+      <EditRecordModal isOpen={isOpen} onClose={onClose} record={editingRecord} setRecord={setEditingRecord} />
+    </>
   );
 };
 
