@@ -27,6 +27,10 @@ const Index = () => {
   return (
     <Box p={5}>
       <Heading mb={4}>Bibliographic Records Dashboard</Heading>
+      <input type="file" id="fileInput" hidden onChange={(e) => console.log(e.target.files[0].name)} />
+      <Button onClick={() => document.getElementById("fileInput").click()} leftIcon={<FaFilePdf />} colorScheme="teal" variant="solid" mb={4}>
+        Upload BibTeX File
+      </Button>
       <VStack divider={<Divider />} spacing={4} align="stretch">
         {bibliographicRecords.map((record) => (
           <Box key={record.id} p={5} shadow="md" borderWidth="1px" borderRadius="lg">
